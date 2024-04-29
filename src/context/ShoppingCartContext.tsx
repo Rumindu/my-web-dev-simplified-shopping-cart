@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 import { ShoppingCart } from "../components/shoppingCart";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type CartItem = {
   id: number;
@@ -18,21 +19,26 @@ type ShoppingCartContext = {
   removeFromCart: (id: number) => void;
 };
 
+//this is common pattern for context provider in React
 type ShoppingCartProviderProps = {
   children: ReactNode;
 };
 
+// Creating the Context
 const ShoppingCartContext = createContext({} as ShoppingCartContext);
 
+// Creating the custom hook for the context
+//Any component that needs to access the shopping cart context can use this hook.
 export function useShoppingCart() {
   return useContext(ShoppingCartContext);
 }
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<
-    { id: number; quantity: number }[]
-  >([]);
+  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
+    "shopping-cart",
+    []
+  );
 
   const cartQuantity = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -101,7 +107,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }}
     >
       {children}
-      <ShoppingCart cartOpen={cartOpen}/>
+      <ShoppingCart cartOpen={cartOpen} />
     </ShoppingCartContext.Provider>
   );
 }

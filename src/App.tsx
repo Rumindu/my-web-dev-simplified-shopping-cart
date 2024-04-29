@@ -5,6 +5,8 @@ import { Store } from "./pages/Store";
 import { About } from "./pages/About";
 import { Navbar } from "./components/Navbar";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
+import { routes } from "./utilities/constants";
+
 
 function App() {
   return (
@@ -15,7 +17,7 @@ function App() {
         {" "}
         {/*adding some margin from the top*/}
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path={routes.home} element={<Home />} />
           <Route path="/store" element={<Store />} />
           <Route path="/about" element={<About />} />
         </Routes>
